@@ -9,16 +9,40 @@ import {
   AppRegistry,
   StyleSheet,
   Text,
-  View
+  View,
+  TouchableHighlight
 } from 'react-native';
+import ImagePicker from 'react-native-image-picker';
+
+var options = {
+  title: 'Select an Image',
+  storageOptions: {
+    skipBackup: true,
+  },
+  maxWidth: 480
+};
 
 export default class ClarifaiApp extends Component {
+  selectImage(){
+    ImagePicker.showImagePicker(options, (response) => {
+      console.log('Response = ', response);
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      }
+      else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      }
+      else {
+        // Do something with the selected image
+      }
+    });
+  }
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
+        <TouchableHighlight onPress={this.selectImage.bind(this)}>
+          <Text>Select an image</Text>
+        </TouchableHighlight>
         <Text style={styles.instructions}>
           To get started, edit index.ios.js
         </Text>
