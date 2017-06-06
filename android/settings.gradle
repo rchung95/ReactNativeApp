@@ -1,0 +1,3 @@
+rootProject.name = 'ClarifaiApp'
+
+include ':app'
