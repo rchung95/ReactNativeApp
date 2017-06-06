@@ -10,7 +10,8 @@ import {
   StyleSheet,
   Text,
   View,
-  TouchableHighlight
+  TouchableHighlight,
+  Image
 } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
 
@@ -23,6 +24,10 @@ var options = {
 };
 
 export default class ClarifaiApp extends Component {
+  constructor() {
+    super();
+    this.state = {imageSource:'https://community.clarifai.com/uploads/default/_emoji/clarifai.png'};
+  }
   selectImage(){
     ImagePicker.showImagePicker(options, (response) => {
       console.log('Response = ', response);
@@ -33,7 +38,7 @@ export default class ClarifaiApp extends Component {
         console.log('ImagePicker Error: ', response.error);
       }
       else {
-        // Do something with the selected image
+        this.setState({imageSource: response.uri.replace('file://', '')})
       }
     });
   }
@@ -43,9 +48,10 @@ export default class ClarifaiApp extends Component {
         <TouchableHighlight onPress={this.selectImage.bind(this)}>
           <Text>Select an image</Text>
         </TouchableHighlight>
-        <Text style={styles.instructions}>
-          To get started, edit index.ios.js
-        </Text>
+        <Image
+          source={{uri: this.state.imageSource}}
+          style={styles.image}
+        />
         <Text style={styles.instructions}>
           Press Cmd+R to reload,{'\n'}
           Cmd+D or shake for dev menu
@@ -71,6 +77,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#333333',
     marginBottom: 5,
+  },
+  image: {
+    width: 200,
+    height: 200,
   },
 });
 
