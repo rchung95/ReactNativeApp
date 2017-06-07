@@ -14,6 +14,12 @@ import {
   Image
 } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
+import Clarifai from 'clarifai';
+
+var app = new Clarifai.App(
+  'GycgLP_5wcs1jVOjwlkIEJLqtvBs6B1I93A6swic',
+  'CbNC9dBcmre-HuQasiE5lXyOX1T67Fn9sqpm7QQl'
+);
 
 var options = {
   title: 'Select an Image',
@@ -26,7 +32,7 @@ var options = {
 export default class ClarifaiApp extends Component {
   constructor() {
     super();
-    this.state = {imageSource:'https://community.clarifai.com/uploads/default/_emoji/clarifai.png'};
+    this.state = {imageSource:'https://community.clarifai.com/uploads/default/_emoji/clarifai.png', tagText: ''};
   }
   selectImage(){
     ImagePicker.showImagePicker(options, (response) => {
@@ -38,7 +44,20 @@ export default class ClarifaiApp extends Component {
         console.log('ImagePicker Error: ', response.error);
       }
       else {
-        this.setState({imageSource: response.uri.replace('file://', '')})
+        // Do something with the selected image
+        this.setState({imageSource: response.uri.replace('file://', '')});
+        app.models.predict(Clarifai.GENERAL_MODEL, {base64:response.data}).then(
+        (res) => {
+          console.log('Clarifai response = ', res);
+          let tags = '';
+          for (let i = 0; i<res.data.outputs[0].data.concepts.length; i++) {
+            tags += res.data.outputs[0].data.concepts[i].name + ' ';
+          }
+          this.setState({tagText:tags});
+        },
+        (error)=>{
+          console.log(error);  
+        });
       }
     });
   }
@@ -52,6 +71,7 @@ export default class ClarifaiApp extends Component {
           source={{uri: this.state.imageSource}}
           style={styles.image}
         />
+        <Text>{this.state.tagText}</Text>
         <Text style={styles.instructions}>
           Press Cmd+R to reload,{'\n'}
           Cmd+D or shake for dev menu
