@@ -17,8 +17,8 @@ import ImagePicker from 'react-native-image-picker';
 import Clarifai from 'clarifai';
 
 var app = new Clarifai.App(
-  'GycgLP_5wcs1jVOjwlkIEJLqtvBs6B1I93A6swic',
-  'CbNC9dBcmre-HuQasiE5lXyOX1T67Fn9sqpm7QQl'
+  'SECRET STUFF',
+  'SECRET'
 );
 
 var options = {
